@@ -249,5 +249,3 @@ h.show_map(turtle=True)
 h.exit_count_step()
 h.exit_show_step()
 h.slovestnoe_opisanie()
-
-
