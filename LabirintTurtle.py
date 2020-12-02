@@ -8,6 +8,7 @@ class LabirintTurtle:
         self.pyt = []
         self.kopiya = []
         self.karta_valid = True
+        self.wrong_pyt = False
 
     def printt(self, text):
         print("\033[31m {}".format(text))
@@ -29,7 +30,8 @@ class LabirintTurtle:
 
             for i in range(len(self.igrovoe_pole)):
                 if len(self.igrovoe_pole[i]) != po_x:
-                    self.igrovoe_pole[i] += (po_x - len(self.igrovoe_pole[i])) * [" "]
+                    self.igrovoe_pole[i] += (po_x -
+                                             len(self.igrovoe_pole[i])) * [" "]
 
             self.graf = {}
             for y in range(len(self.igrovoe_pole)):
@@ -67,7 +69,8 @@ class LabirintTurtle:
                     except:
                         pass
 
-            if self.igrovoe_pole[int(koordinata[0])][int(koordinata[1])] != "*":
+            if self.igrovoe_pole[int(koordinata[0])][int(koordinata[1])]\
+                    != "*":
                 pass
             else:
                 print("Черепаха на месте стены")
@@ -107,10 +110,13 @@ class LabirintTurtle:
                                 return new_path
                         explored.append(node)
                 return False
+
             for i in vihodi:
-                res = BFS_SP(self.graf, str(self.turtle_position[1]) + "," + str(self.turtle_position[0]),
+                res = BFS_SP(self.graf,
+                             str(self.turtle_position[1]) +
+                             "," + str(self.turtle_position[0]),
                              str(i[0]) + "," + str(i[1]))
-                if res != False:
+                if res:
                     if len(res) < self.lenth:
                         self.pyt = res
                         self.lenth = len(res)
@@ -121,11 +127,6 @@ class LabirintTurtle:
         except:
             print("Неведомая ошибка")
             self.karta_valid = False
-
-
-
-
-
 
     def load_map(self, name):
         try:
@@ -147,33 +148,30 @@ class LabirintTurtle:
             self.karta_valid = True
         except:
             self.__init__()
+            self.wrong_pyt = True
             print("Неправильное название или путь")
 
     def show_map(self, turtle=False):
         if self.karta_valid:
-            if self.igrovoe_pole[int(self.turtle_position[0])][int(self.turtle_position[1])] != "*":
-                if turtle == True:
-                    self.igrovoe_pole[int(self.turtle_position[0])][int(self.turtle_position[1])] = "A"
+            znach = int(self.turtle_position[0])
+            num = int(self.turtle_position[1])
+            if self.igrovoe_pole[znach][num] != "*":
+                if turtle:
+                    self.igrovoe_pole[znach][num] = "A"
             else:
                 print("Черепаха на месте стены")
 
             for i in self.igrovoe_pole:
                 self.printt("\t".join(i))
 
-
-
-
-
     def check_map(self):
         if not self.karta_valid:
             print("Оло карта не валидна")
             return
         else:
-            print("С картой все ок")
+            if not self.wrong_pyt:
+                print("С картой все ок")
         self.odno_i_to_sge()
-
-
-
 
     def exit_count_step(self):
         if not self.karta_valid:
@@ -219,30 +217,24 @@ class LabirintTurtle:
         if self.pyt == []:
             print("Путь не определен")
         else:
-            if self.kopiya[int(self.pyt[1].split(",")[1])][int(self.pyt[1].split(",")[0])] == "↓":
+            n1 = int(self.pyt[1].split(",")[1])
+            n2 = int(self.pyt[1].split(",")[0])
+            if self.kopiya[n1][n2] == "↓":
                 print("Разворот на 180")
             pologenie_pred = 0
             for i in self.pyt[1::]:
-                if pologenie_pred - napravleniya[self.kopiya[int(i.split(",")[1])][int(i.split(",")[0])]] == 90:
+                m = int(i.split(",")[1])
+                hz = napravleniya[self.kopiya[m][int(i.split(",")[0])]]
+                if pologenie_pred - hz == 90:
                     print("Поворот налево")
                     print("Вперед")
-                elif pologenie_pred - napravleniya[self.kopiya[int(i.split(",")[1])][int(i.split(",")[0])]] == -90:
+                elif pologenie_pred - hz == -90:
                     print("Поворот направо")
                     print("Вперед")
                 else:
                     print("Вперед")
-                pologenie_pred = napravleniya[self.kopiya[int(i.split(",")[1])][int(i.split(",")[0])]]
-
-
-
+                pologenie_pred = hz
 h = LabirintTurtle()
-h.load_map("l1.txt")
-h.check_map()
-h.show_map(turtle=True)
-h.exit_count_step()
-h.exit_show_step()
-h.slovestnoe_opisanie()
-
 h.load_map("l.txt")
 h.check_map()
 h.show_map(turtle=True)
@@ -250,5 +242,12 @@ h.exit_count_step()
 h.exit_show_step()
 h.slovestnoe_opisanie()
 
+
+h.load_map("l1.txt")
+h.check_map()
+h.show_map(turtle=True)
+h.exit_count_step()
+h.exit_show_step()
+h.slovestnoe_opisanie()
 
 
